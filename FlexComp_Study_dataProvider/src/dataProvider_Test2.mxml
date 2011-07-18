@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout> 	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.CollectionEvent;
+			import mx.events.CollectionEventKind;
+			//1. [Bindable] Metadata 태그가 데이터 변동에도 동작한다고 생각하지 말자.
+			//2. ArrayCollection의 source를 참고하여 data를 추가하지 말자.
+			
+			[Bindable]
+			private var ac:ArrayCollection = new ArrayCollection([
+				{name :"김성남", email :"sn279@naver.com"},
+				{name :"박지성", email :"jsP@mail.com"}
+			]);
+			
+			private function init():void{
+				//dg.dataProvider = ac;
+			}
+			/**
+			 * 아이템 추가
+			 */                     
+			private function addPerson():void
+			{
+				ac.addItem( {name:txtName.text, email:txtEmail.text } );     
+				clearInputs();
+			}
+			
+			/**
+			 * 아이템 삭제
+			 */                     
+			private function removePerson():void
+			{
+				if( dg.selectedIndex >= 0)
+				{
+					ac.removeItemAt( dg.selectedIndex );
+				}
+			}
+			/**
+			 * 아이템 수정
+			 */                   
+			private function updatePerson():void
+			{
+				if( dg.selectedItem != null )
+				{
+					ac.setItemAt( {name:txtName.text, email:txtEmail.text }, dg.selectedIndex );
+				}
+			}
+			/**
+			 * 아이템 추가(source.push 사용)
+			 */                   
+			private function addPerson_push():void
+			{
+				//ac내부 array에 접근하여 데이터를 넣어주기 때문에 이벤트 발생안함.
+				ac.source.push( {name:txtName.text, email:txtEmail.text } );  
+				
+				clearInputs();
+			}                    
+			/**
+			 * 참조변경
+			 */                   
+			private function newInstance():void
+			{
+				ac = new ArrayCollection([
+					{name :"구애정", email :"go@naver.com"},
+					{name :"독고진", email :"dok@mail.com"}
+				]);
+			}                   
+			/**
+			 * TextInput 초기화
+			 */                    
+			private function clearInputs():void
+			{
+				txtName.text = "";
+				txtEmail.text = "";
+			}			
+		]]>
+	</fx:Script>
+	<s:Panel title="ArrayCollection 테스트" width="50%">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+		</s:layout> 			
+		<mx:DataGrid width="100%" id="dg" dataProvider="{ac}">
+			<mx:columns>
+				<mx:DataGridColumn dataField="name" headerText="이름"/>
+				<mx:DataGridColumn dataField="email" headerText="전자우편"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:Form width="100%">
+			<s:FormItem label="이름" width="100%">
+				<s:TextInput id="txtName" width="100%" text="{dg.selectedItem.name}"/>
+			</s:FormItem>
+			<s:FormItem label="전자우편" width="100%">
+				<s:TextInput id="txtEmail" width="100%" text="{dg.selectedItem.email}"/>
+			</s:FormItem>
+		</s:Form>
+		<mx:ControlBar horizontalAlign="center">
+			<s:Button label="추가" click="addPerson()"/>
+			<s:Button label="변경" click="updatePerson()"/>
+			<s:Button label="삭제" click="removePerson()"/>
+			<s:Button label="초기화" click="clearInputs()"/>
+			<s:Button label="추가(push)" click="addPerson_push()"/>
+			<s:Button label="참조변경" click="newInstance()"/>                        
+		</mx:ControlBar>
+	</s:Panel>
+</s:Application>

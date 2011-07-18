@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" creationComplete="init()">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout> 
+	
+	<fx:Script>        
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.CollectionEvent;
+			import mx.events.CollectionEventKind;
+			[Bindable]
+			private var ac:ArrayCollection = new ArrayCollection([
+				{name :"김성남", email :"sn279@naver.com"},
+				{name :"박지성", email :"jsP@mail.com"}
+			]);
+			
+			private var arr:Array = new Array([
+				{name :"김성남", email :"sn279@naver.com"},
+				{name :"박지성", email :"jsP@mail.com"}
+			]);
+			
+			/**
+			 * 최초실행 (모든 컴포넌트가 완료된 시점)_creationComplete
+			 */                 
+			private function init():void
+			{
+				//ac에 collection 이벤트 등록
+				ac.addEventListener(CollectionEvent.COLLECTION_CHANGE, collectionEventHandler);
+				
+				//arr에는 collection 이벤트가 없다.
+				
+			}
+			
+			
+			/**
+			 * CollectionEvent.COLLECTION_CHANGE 이벤트 발생시 
+			 * 실행되는 function 
+			 */                     
+			private function collectionEventHandler( event:CollectionEvent):void
+			{
+				switch( event.kind )
+				{
+					case CollectionEventKind.ADD:
+						addLog( "Item " + event.location + " added");
+						break;
+					case CollectionEventKind.REMOVE:
+						addLog( "Item " + event.location + " removed");
+						break;
+					case CollectionEventKind.REPLACE:
+						addLog( "Item " + event.location + " replaced");
+						break;
+					case CollectionEventKind.UPDATE:
+						addLog( "Item updated");
+						break;
+				}
+			}
+			
+			/**
+			 * txtLog에 발생된 로그 출력 
+			 */                    
+			private function addLog( log:String ):void
+			{
+				txtLog.text = log + "\n" + txtLog.text;
+			}
+			
+			/**
+			 * 아이템 추가
+			 */                     
+			private function addPerson():void
+			{
+				ac.addItem( {name:txtName.text, email:txtEmail.text } );     
+				clearInputs();
+			}
+			
+			/**
+			 * 아이템 삭제
+			 */                     
+			private function removePerson():void
+			{
+				if( dg.selectedIndex >= 0)
+				{
+					ac.removeItemAt( dg.selectedIndex );
+				}
+			}
+			/**
+			 * 아이템 수정
+			 */                   
+			private function updatePerson():void
+			{
+				if( dg.selectedItem != null )
+				{
+					ac.setItemAt( {name:txtName.text, email:txtEmail.text }, dg.selectedIndex );
+				}
+			}
+			/**
+			 * TextInput 초기화
+			 */                    
+			private function clearInputs():void
+			{
+				txtName.text = "";
+				txtEmail.text = "";
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Panel title="ArrayCollection 테스트" width="50%">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+		</s:layout> 		
+		<mx:DataGrid width="100%" id="dg" dataProvider="{ac}">
+			<mx:columns>
+				<mx:DataGridColumn dataField="name" headerText="이름"/>
+				<mx:DataGridColumn dataField="email" headerText="전자우편"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:Form width="100%">
+			<s:FormItem label="이름" width="100%">
+				<s:TextInput id="txtName" width="100%" text="{dg.selectedItem.name}"/>
+			</s:FormItem>
+			<s:FormItem label="전자우편" width="100%">
+				<s:TextInput id="txtEmail" width="100%" text="{dg.selectedItem.email}"/>
+			</s:FormItem>
+		</s:Form>
+		<mx:ControlBar horizontalAlign="center">
+			<s:Button label="추가" click="addPerson()"/>
+			<s:Button label="변경" click="updatePerson()"/>
+			<s:Button label="삭제" click="removePerson()"/>
+			<s:Button label="초기화" click="clearInputs()"/>                     
+		</mx:ControlBar>
+	</s:Panel>
+	<s:Panel title="로그" width="50%" height="150">
+		<s:TextArea id="txtLog" width="100%" height="100%"/>
+	</s:Panel>
+	
+</s:Application>

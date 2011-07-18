@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<fx:Script>
+		<![CDATA[
+			import mx.utils.ArrayUtil;
+			import mx.collections.ArrayCollection;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			
+			
+			private function priceMethod(data:Object, column:DataGridColumn):String{
+				return num.format(data[column.dataField]);
+			}
+			
+			private function reultHandler(event:ResultEvent):void{
+				
+				dg.dataProvider = event.result.rss.channel.item;
+				
+			}
+			private function faultHandler(event:FaultEvent):void{
+				trace(ObjectUtil.toString(event));
+			}				
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:HTTPService id="naver"
+						url="http://openapi.naver.com/search" showBusyCursor="true"
+						result="reultHandler(event);" fault="faultHandler(event);">
+			<mx:request>
+				<key>11a35ba3d93707db6e8f5fc299087bf0</key>
+				<query>{b_name.text}</query>
+				<display>50</display>
+				<start>1</start>
+				<target>book</target>
+				<sort>sim</sort>
+			</mx:request>
+		</mx:HTTPService>
+		
+		<s:NumberFormatter id="num"/>		
+	</fx:Declarations>
+
+	
+	<s:Label x="34" y="24" text="도서명 :"/>
+	<s:TextInput x="89" y="22" id="b_name"
+				  enter="naver.send()"/>
+	<s:Button x="257" y="22" label="검색"
+			   click="naver.send()"/>
+	<mx:DataGrid x="34" y="66" id="dg" 
+				 width="90%" height="85%">
+		<mx:columns>
+			<mx:DataGridColumn 
+				headerText="이미지" dataField="image">
+				<mx:itemRenderer>					
+					<fx:Component>
+						<s:MXItemRenderer>
+							<s:Image width="90" height="110"
+									  source="{data.image}"/>							
+						</s:MXItemRenderer>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+			<mx:DataGridColumn 
+				headerText="책 제목" dataField="title">
+				<mx:headerRenderer>
+					<fx:Component>
+						<s:MXItemRenderer>
+							<s:Label text="도서명" textAlign="center"/>
+						</s:MXItemRenderer>
+					</fx:Component>
+				</mx:headerRenderer>
+				<mx:itemRenderer>
+					<fx:Component>
+						<s:MXItemRenderer>
+							<mx:Label htmlText="{data.title}"/>
+						</s:MXItemRenderer>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+			<mx:DataGridColumn 
+				headerText="저자" dataField="author"/>
+			<mx:DataGridColumn 
+				headerText="출판일" dataField="pubdate"/>
+			<mx:DataGridColumn 
+				headerText="가격" dataField="price"
+				labelFunction="priceMethod"/>			
+		</mx:columns>
+	</mx:DataGrid>	
+</s:Application>

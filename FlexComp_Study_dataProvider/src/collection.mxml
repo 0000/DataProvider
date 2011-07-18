@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.IViewCursor;
+			
+			import spark.collections.Sort;
+			import spark.collections.SortField;
+			/**
+			 * Array 관련 예제
+			 */
+			private function arrayTest():void{
+				
+				var array:Array = [1, 2, 3, 4, 5];
+				
+				array[0] = 0;
+				trace(array);			// Output: 0,2,3,4,5
+				
+				array.push(6, 7);
+				trace(array);			// Output: 0,2,3,4,5,6,7
+				
+				array.pop();
+				trace(array);			// Output: 0,2,3,4,5,6
+				
+				trace(array.length);	// Output: 6
+				
+				array.length = 2;
+				trace(array);			// Output: 0,2
+			}
+			
+			/**
+			 * sort 관련 예제
+			 */
+			private function arrayCollectionSort_Test():void
+			{
+				
+				var array:Array = ["철이","똘이","찰스","뽀삐","순희","영희","나비"];
+				var myAC:ArrayCollection = new ArrayCollection(array);
+				
+				var sort:Sort = new Sort();
+				
+				sort.fields = [new SortField(null, true)];
+				
+				myAC.sort = sort;
+				myAC.refresh();
+				
+				trace(array);		// Output: 철이,똘이,찰스,뽀삐,순희,영희,나비 
+				trace(myAC);		
+				/* Output:	(Array)#0
+				[0] "나비"
+				[1] "똘이"
+				[2] "뽀삐"
+				[3] "순희"
+				[4] "영희"
+				[5] "찰스"
+				[6] "철이"
+				*/	
+				
+				
+			}
+			
+			/**
+			 * IViewCursor 관련 예제
+			 */
+			private function arrayCollectionIViewCursor_Test():void{
+				
+				var array:Array = [1, 2, 3, 4, 5];
+				var myAC:ArrayCollection = new ArrayCollection(array);
+				
+				var myCursor:IViewCursor = myAC.createCursor();				
+				
+				
+				while (!myCursor.afterLast) {   // 커서가 해당 Collection의 마지막까지 이동할떄까지
+					
+					// doSomething....
+					
+					myCursor.moveNext(); 	// 커서를 다음으로 이동
+				}
+				// 루프 종료시 커서의 current는 아이템의 마지막에 위치
+				
+				myCursor.insert(6);			
+				trace(array);				// Output: 1,2,3,4,5,6
+				
+				myCursor.movePrevious();
+				
+				myCursor.remove();
+				trace(array);				// Output: 1,2,3,4,5
+				
+			}
+			
+			/**
+			 * ArrayList 관련 예제
+			 */
+			private function arrayCollectionArrayList_Test():void{
+				
+				var array:Array = [1, 2, 3, 4, 5];
+				
+				var myAL:ArrayCollection = new ArrayCollection(array);
+				
+				myAL.addItem(6);				// 배열의 맨 마지막에 6의 추가
+				trace(array);					// Output: 1,2,3,4,5,6 
+				
+				myAL.addItemAt(7, 1);			// 1번째에 7을 추가
+				trace(array);					// Output: 1,7,2,3,4,5,6
+				
+				myAL.removeItemAt(1);			// 1번째 항목을 제거
+				trace(array);					// Output: 1,2,3,4,5,6 
+				
+				trace(myAL.getItemIndex(3));	// 3이 몇번째 항목인지 조사 Output: 2
+				
+				trace(myAL.getItemAt(3));		// 3번째 항목의 값 받기 Output: 4
+				
+			}				
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup>		
+		<s:Button id="array" label="array" click="arrayTest()"/>
+		<s:Button  id="sort" label="sort" click="arrayCollectionSort_Test()"/>
+		<s:Button  id="iViewCursor" label="iViewCursor" click="arrayCollectionIViewCursor_Test()"/>
+		<s:Button  id="arrayList" label="ArrayList" click="arrayCollectionArrayList_Test()"/>
+	</s:HGroup>	
+</s:Application>

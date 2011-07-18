@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   creationComplete="init()" >
+	<fx:Script>
+		<![CDATA[
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			
+			
+			[Bindable]
+			private var testDg:ArrayCollection = new ArrayCollection([
+				{ 2 : '2*1 = 2', 3 : '3*1 = 3',  4 : '4*1 = 4'},
+				{ 2 : '2*2 = 4', 3 : '3*2 = 6',  4 : '4*2 = 8'},
+				{ 2 : '2*3 = 6', 3 : '3*3 = 9',  4 : '4*3 = 12'},
+				{ 2 : '2*4 = 8', 3 : '3*4 = 12', 4 : '4*4 = 16'}
+			]);
+			
+			private var dp:ArrayCollection = new ArrayCollection();
+			
+			private function init():void {
+				
+				
+				for (var i:int=1; i<=9; i++) {
+					
+					var obj:Object = new Object();
+					
+					for (var j:int=2; j<=9; j++){
+						
+						obj[j] = j + " * " + i + " = " + (j*i);
+						
+					}
+					trace(ObjectUtil.toString(obj));
+					
+					dp.addItem(obj);
+				}
+				
+				dg.dataProvider = dp;
+			}
+			
+						
+			
+		]]>
+	</fx:Script>
+	<mx:DataGrid id="dg" >
+		<mx:columns>
+			<mx:DataGridColumn dataField="2" headerText="2단"/>
+			<mx:DataGridColumn dataField="3" headerText="3단"/>
+			<mx:DataGridColumn dataField="4" headerText="4단"/>
+			<mx:DataGridColumn dataField="5" headerText="5단"/>
+			<mx:DataGridColumn dataField="6" headerText="6단"/>
+			<mx:DataGridColumn dataField="7" headerText="7단"/>	
+			<mx:DataGridColumn dataField="8" headerText="8단"/>
+			<mx:DataGridColumn dataField="9" headerText="9단"/>  	                	        
+		</mx:columns>
+	</mx:DataGrid>
+</s:Application>

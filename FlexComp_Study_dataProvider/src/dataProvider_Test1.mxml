@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   creationComplete="init()">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			import mx.charts.AreaChart;
+			import mx.utils.ArrayUtil;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private function init():void{
+				loc.send();
+				
+				//Array형태로 넣기.
+				cb.dataProvider = ['flex','java','html','css','db'] as Array;
+				
+				//xmllist형태로 넣기.
+				myMenuBar.dataProvider = menuBarData as XMLList;
+				
+				//xml형태로 넣기.
+				myTree.dataProvider = treeData as XML;
+				myList.dataProvider = listData.state;
+				
+				//object형태로 넣기.
+				dg2.dataProvider = {YYMMDD : "20091208", NAME: "서울우유"} as Object;
+						
+			}
+			
+			
+			private function resultHandler(event:ResultEvent):void{
+				//ArrayCollection형태로 넣기.
+				dg.dataProvider = event.result.data.row as ArrayCollection;
+			}
+			
+			private function faultHandler(event:FaultEvent):void{
+				trace(event);
+			}			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<fx:XMLList id="menuBarData">
+			<menuitem label="Menu1" data="top">
+				<menuitem label="MenuItem 1-A" data="1A"/>
+				<menuitem label="MenuItem 1-B" data="1B"/>
+			</menuitem>
+			<menuitem label="Menu2" data="top">
+				<menuitem label="MenuItem 2-A" type="check" data="2A"/>
+				<menuitem type="separator"/>
+				<menuitem label="MenuItem 2-B" >
+					<menuitem label="SubMenuItem 3-A" type="radio"
+							  groupName="one" data="3A"/>
+					<menuitem label="SubMenuItem 3-B" type="radio"
+							  groupName="one" data="3B"/>
+				</menuitem>
+			</menuitem>
+		</fx:XMLList>
+		
+		<fx:XML id="treeData">
+			<node label="Mail Box">
+				<node label="Inbox">
+					<node label="Marketing"/>
+					<node label="Product Management"/>
+					<node label="Personal"/>
+				</node>
+				<node label="Outbox">
+					<node label="Professional"/>
+					<node label="Personal"/>
+				</node>
+				<node label="Spam"/>
+				<node label="Sent"/>
+			</node>
+		</fx:XML>
+		
+		<fx:XML id="listData">
+			<states>
+				<state label="Alabama" data="AL"/>
+				<state label="Alaska" data="AK"/>
+				<state label="Arizona" data="AZ"/>
+				<state label="Arkansas" data="AR"/>
+				<state label="California" data="CA"/>
+				<state label="Colorado" data="CO"/>
+				<state label="Connecticut" data="CT"/>
+			</states>
+		</fx:XML>
+		
+		<s:HTTPService id="loc" url="http://localhost:8080/dataProviderTest/TestData.jsp"
+					   result="resultHandler(event)" fault="faultHandler(event)"/>		
+	</fx:Declarations>
+	<mx:HBox>
+		<mx:Panel title="DataGrid(ArrayCollection)">
+			<mx:DataGrid id="dg">
+				<mx:columns>
+					<mx:DataGridColumn dataField="id" headerText="ID"/>
+					<mx:DataGridColumn dataField="username" headerText="UserName"/>
+				</mx:columns>
+			</mx:DataGrid>				
+		</mx:Panel>
+		
+		<mx:Panel title="ComboBox(Array)">
+			<mx:ComboBox id="cb"/>
+		</mx:Panel> 
+		
+		
+		<mx:Panel title="MenuBar(XMLList)">
+			<mx:MenuBar id="myMenuBar" labelField="@label"/>
+		</mx:Panel>
+		
+		<mx:Panel title="Tree(XML)">
+			<mx:Tree id="myTree" labelField="@label" showRoot="false" width="100%"/>
+		</mx:Panel>
+		<mx:Panel title="List(XML)">
+			<mx:List id="myList" labelField="@data" width="100%"/>
+		</mx:Panel>
+		
+		<mx:Panel title="DataGrid(Object)">		
+			<mx:DataGrid id="dg2">
+				<mx:columns>
+					<mx:DataGridColumn dataField="YYMMDD" headerText="제조일자"/>
+					<mx:DataGridColumn dataField="NAME" headerText="상품명"/>
+				</mx:columns>
+			</mx:DataGrid>	
+		</mx:Panel> 
+	</mx:HBox>
+
+</s:Application>
